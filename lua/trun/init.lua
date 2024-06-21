@@ -60,7 +60,7 @@ local function create_window()
 
 	Bufnr = vim.api.nvim_create_buf(false, false)
 
-	Win_id = popup.create(Bufnr, {
+	local win_id, win = popup.create(Bufnr, {
 		title = "Trun",
 		highlight = "TRunWindow",
 		line = math.floor(((vim.o.lines - height) / 2) - 1),
@@ -69,6 +69,9 @@ local function create_window()
 		minheight = height,
 		borderchars = borderchars,
 	})
+	Win_id = win_id
+
+	vim.api.nvim_set_option_value("winhl", "Normal:HarpoonBorder", { win = win.border.win_id })
 end
 
 local function close_window()
