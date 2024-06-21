@@ -94,7 +94,7 @@ function M.toggle_trun_window()
 	create_window()
 
 	local content = get_config()[cwd]
-	local contents = utils.split(content, "\n")
+	local contents = utils.split(content or "", "\n")
 
 	vim.api.nvim_set_option_value("number", true, { win = Win_id })
 	vim.api.nvim_buf_set_lines(Bufnr, 0, #contents, false, contents)
