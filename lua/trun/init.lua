@@ -1,4 +1,5 @@
 local utils = require("trun.utils")
+local default = require("trun.default")
 local popup = require("plenary.popup")
 local tmux = require("harpoon.tmux")
 local Path = require("plenary.path")
@@ -32,10 +33,10 @@ local function get_config()
 	return trun_config
 end
 
-local function get_cwd_config()
+local function get_cwd_command()
 	local trun_config = get_config()
-	if trun_config == nil then
-		return
+	if trun_config == nil or trun_config[cwd] == nil or trun_config[cwd] == "" then
+		return default.get_default_cmd(vim.bo.filetype)
 	end
 
 	return trun_config[cwd]
@@ -84,7 +85,11 @@ local function close_window()
 end
 
 function M.run()
-	local cmd = string.format("%s", get_cwd_config())
+	local cmd = get_cwd_command()
+	if cmd == nil then
+		vim.api.nvim_err_writeln("No command found.")
+		return
+	end
 
 	local function try_send_command(target)
 		return pcall(function()
