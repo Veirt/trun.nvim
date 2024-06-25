@@ -85,7 +85,24 @@ end
 
 function M.run()
 	local cmd = string.format("%s", get_cwd_config())
-	tmux.sendCommand("2", cmd)
+
+	local function try_send_command(target)
+		return pcall(function()
+			tmux.sendCommand(target, cmd)
+		end)
+	end
+
+	-- Try bottom of the current pane
+	if try_send_command("{down-of}") then
+		return
+	end
+
+	-- If failed, try the second pane
+	if try_send_command("2") then
+		return
+	end
+
+	vim.api.nvim_err_writeln("Failed to run command. No pane found.")
 end
 
 function M.toggle_trun_window()
