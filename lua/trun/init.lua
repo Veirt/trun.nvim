@@ -19,6 +19,12 @@ local function get_config()
 		return
 	end
 
+	local config_file = Path:new(config)
+	if not config_file:exists() then
+		config_file:parent():mkdir({ parents = true, exists_ok = true })
+		config_file:write("{}", "w")
+	end
+
 	-- load from config and parse from json
 	local trun_config = Path:new(config):read()
 	if trun_config == nil then
